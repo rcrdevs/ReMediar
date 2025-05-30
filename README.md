@@ -10,7 +10,7 @@
 ### Como executar:
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/FranksneyGregorio/Projeto-ReMediar-main
+   git clone https://github.com/rcrdevs/ReMediar
    cd ReMediar
    git checkout v2
 
