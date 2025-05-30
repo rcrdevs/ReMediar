@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)https://rcrdevs.github.io/Projeto-ReMediar/ -->
 <html lang="pt-br">
 
 <head>
-  <script src="https://apis.google.com/js/api.js"></script>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ReMediar</title>
   <link rel="stylesheet" href="styles.css">
+
+  <!-- Google Identity Services e Google API -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://apis.google.com/js/api.js"></script>
 </head>
+
 <body>
   <header>
     <div class="header-content">
@@ -29,38 +32,55 @@
     <nav id="main-nav" style="display: none;">
       <button id="home-btn">Tela Inicial</button>
       <button id="schedule-btn">Agendamento</button>
-      <button id="history-btn">HistÃ³rico</button>
+      <button id="history-btn">Histórico</button>
     </nav>
 
-    <!-- Telas -->
+    <!-- Login -->
     <div id="login" class="screen active">
       <h2>Login</h2>
       <div class="form-group">
         <label for="login-email">E-mail:</label>
-        <input type="email" id="login-email" required="">
+        <input type="email" id="login-email" required>
       </div>
       <div class="form-group">
         <label for="login-password">Senha:</label>
-        <input type="password" id="login-password" required="">
+        <input type="password" id="login-password" required>
       </div>
       <button class="button" id="login-submit">Entrar</button>
       <p id="login-error" class="error-message"></p>
+
+      <!-- Google Login -->
+      <div id="g_id_onload"
+           data-client_id="810891313360-frc3ivhj7njfdboln4e61tqiphq8p52j.apps.googleusercontent.com"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="true">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="rectangular"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-size="large"
+           data-logo_alignment="left">
+      </div>
     </div>
 
+    <!-- Cadastro -->
     <div id="register" class="screen">
       <h2>Cadastro</h2>
       <div class="form-group">
         <label for="register-email">E-mail:</label>
-        <input type="email" id="register-email" required="">
+        <input type="email" id="register-email" required>
       </div>
       <div class="form-group">
         <label for="register-password">Senha:</label>
-        <input type="password" id="register-password" required="" minlength="6">
+        <input type="password" id="register-password" required minlength="6">
       </div>
       <button class="button" id="register-submit">Cadastrar</button>
       <p id="register-error" class="error-message"></p>
-    <div id="extwaiokist" style="display:none" v="fcoon" q="64d9fcf8" c="55.13" i="66" u="24.49" s="04242500" sg="svr_05062522-ga_04242500-bai_04272521" d="1" w="false" e="" a="2" m="BMe=" vn="3gtra"><div id="extwaigglbit" style="display:none" v="fcoon" q="64d9fcf8" c="55.13" i="66" u="24.49" s="04242500" sg="svr_05062522-ga_04242500-bai_04272521" d="1" w="false" e="" a="2" m="BMe="></div></div></div>
+    </div>
 
+    <!-- Tela Inicial -->
     <div id="home" class="screen">
       <h2>Tela Inicial</h2>
       <p id="user-email">Bem-vindo(a)!</p>
@@ -68,38 +88,40 @@
       <ul id="today-list"></ul>
     </div>
 
+    <!-- Agendamento -->
     <div id="schedule" class="screen">
       <h2>Agendar Compromisso / Lembrete</h2>
       <div class="form-group">
         <label for="event-type">Tipo:</label>
         <select id="event-type">
           <option value="medicamento">Lembrete de Medicamento</option>
-          <option value="compromisso">Compromisso MÃ©dico</option>
+          <option value="compromisso">Compromisso Médico</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="event-title">TÃ­tulo:</label>
-        <input type="text" id="event-title" required="">
+        <label for="event-title">Título:</label>
+        <input type="text" id="event-title" required>
       </div>
       <div class="form-group">
         <label for="event-date">Data:</label>
-        <input type="date" id="event-date" required="">
+        <input type="date" id="event-date" required>
       </div>
       <div class="form-group">
-        <label for="event-time">HorÃ¡rio:</label>
-        <input type="time" id="event-time" required="">
+        <label for="event-time">Horário:</label>
+        <input type="time" id="event-time" required>
       </div>
       <button class="button" id="add-event-btn">Adicionar Evento</button>
       <p id="event-error" class="error-message"></p>
     </div>
 
+    <!-- Histórico -->
     <div id="history" class="screen">
-      <h2>HistÃ³rico</h2>
+      <h2>Histórico</h2>
       <ul id="history-list"></ul>
     </div>
   </div>
 
-  <!-- Modal de EdiÃ§Ã£o -->
+  <!-- Modal de Edição -->
   <div id="edit-modal" class="modal">
     <div class="modal-content">
       <h2>Editar Agendamento</h2>
@@ -107,20 +129,20 @@
         <label for="edit-type">Tipo:</label>
         <select id="edit-type">
           <option value="medicamento">Lembrete de Medicamento</option>
-          <option value="compromisso">Compromisso MÃ©dico</option>
+          <option value="compromisso">Compromisso Médico</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="edit-title">TÃ­tulo:</label>
-        <input type="text" id="edit-title" required="">
+        <label for="edit-title">Título:</label>
+        <input type="text" id="edit-title" required>
       </div>
       <div class="form-group">
         <label for="edit-date">Data:</label>
-        <input type="date" id="edit-date" required="">
+        <input type="date" id="edit-date" required>
       </div>
       <div class="form-group">
         <label for="edit-time">Horário:</label>
-        <input type="time" id="edit-time" required="">
+        <input type="time" id="edit-time" required>
       </div>
       <button class="button" id="save-edit-btn">Salvar</button>
       <button class="button cancel-btn" id="cancel-edit-btn">Cancelar</button>
@@ -128,7 +150,7 @@
     </div>
   </div>
 
-  <!-- ? Modal de Confirmação Personalizado -->
+  <!-- Modal de Confirmação -->
   <div id="confirm-modal" class="modal">
     <div class="modal-content">
       <h2>ReMediar</h2>
@@ -149,16 +171,8 @@
   <script src="firebase-auth.js"></script>
   <script src="firebase-database.js"></script>
 
-  <!-- Seu script -->
+  <!-- Seu Script -->
   <script src="script.js"></script>
-
-  
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-
-
-</div>
-
-
 </body>
 </html>
+
