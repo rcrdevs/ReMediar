@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ReMediar</title>
-  <link rel="stylesheet" href="./ReMediar_files/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
@@ -29,7 +29,7 @@
     <nav id="main-nav" style="display: none;">
       <button id="home-btn">Tela Inicial</button>
       <button id="schedule-btn">Agendamento</button>
-      <button id="history-btn">Histórico</button>
+      <button id="history-btn">HistÃ³rico</button>
     </nav>
 
     <!-- Telas -->
@@ -74,11 +74,11 @@
         <label for="event-type">Tipo:</label>
         <select id="event-type">
           <option value="medicamento">Lembrete de Medicamento</option>
-          <option value="compromisso">Compromisso Médico</option>
+          <option value="compromisso">Compromisso MÃ©dico</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="event-title">Título:</label>
+        <label for="event-title">TÃ­tulo:</label>
         <input type="text" id="event-title" required="">
       </div>
       <div class="form-group">
@@ -86,7 +86,7 @@
         <input type="date" id="event-date" required="">
       </div>
       <div class="form-group">
-        <label for="event-time">Horário:</label>
+        <label for="event-time">HorÃ¡rio:</label>
         <input type="time" id="event-time" required="">
       </div>
       <button class="button" id="add-event-btn">Adicionar Evento</button>
@@ -94,12 +94,12 @@
     </div>
 
     <div id="history" class="screen">
-      <h2>Histórico</h2>
+      <h2>HistÃ³rico</h2>
       <ul id="history-list"></ul>
     </div>
   </div>
 
-  <!-- Modal de Edição -->
+  <!-- Modal de EdiÃ§Ã£o -->
   <div id="edit-modal" class="modal">
     <div class="modal-content">
       <h2>Editar Agendamento</h2>
@@ -107,11 +107,11 @@
         <label for="edit-type">Tipo:</label>
         <select id="edit-type">
           <option value="medicamento">Lembrete de Medicamento</option>
-          <option value="compromisso">Compromisso Médico</option>
+          <option value="compromisso">Compromisso MÃ©dico</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="edit-title">Título:</label>
+        <label for="edit-title">TÃ­tulo:</label>
         <input type="text" id="edit-title" required="">
       </div>
       <div class="form-group">
@@ -119,7 +119,7 @@
         <input type="date" id="edit-date" required="">
       </div>
       <div class="form-group">
-        <label for="edit-time">Hor�rio:</label>
+        <label for="edit-time">Horário:</label>
         <input type="time" id="edit-time" required="">
       </div>
       <button class="button" id="save-edit-btn">Salvar</button>
@@ -128,7 +128,7 @@
     </div>
   </div>
 
-  <!-- ? Modal de Confirma��o Personalizado -->
+  <!-- ? Modal de Confirmação Personalizado -->
   <div id="confirm-modal" class="modal">
     <div class="modal-content">
       <h2>ReMediar</h2>
