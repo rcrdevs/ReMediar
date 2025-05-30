@@ -1,4 +1,4 @@
-// Configuração do Firebase
+// ConfiguraÃ§Ã£o do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAXC8XI_Q8jM5MrTpboorCMqti5Yn-B7gI",
   authDomain: "projeto-remediar.firebaseapp.com",
@@ -10,13 +10,13 @@ const firebaseConfig = {
   measurementId: "G-3D989EEEQ1"
 };
 
-// Configura��o da Google API
+// Configuração da Google API
 const CLIENT_ID = '810891313360-frc3ivhj7njfdboln4e61tqiphq8p52j.apps.googleusercontent.com';
 const API_KEY = ''; // Pode deixar em branco para testes simples
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
-// Inicialização do Firebase
+// InicializaÃ§Ã£o do Firebase
 let auth, db;
 try {
   const firebaseApp = firebase.initializeApp(firebaseConfig);
@@ -28,7 +28,7 @@ try {
 }
 
 function initGoogleClient() {
-  gapi.load('client:auth2', () => {
+  gapi.load('client', () => {
     gapi.client.init({
       apiKey: API_KEY,
       clientId: CLIENT_ID,
@@ -42,13 +42,17 @@ function initGoogleClient() {
   });
 }
 
+google.accounts.id.initialize({
+  client_id: CLIENT_ID,
+  callback: handleCredentialResponse,
+});
 
-// Variável para controle da edição
+// VariÃ¡vel para controle da ediÃ§Ã£o
 let currentEditId = null;
 
-// Função para mostrar telas
+// FunÃ§Ã£o para mostrar telas
 function showScreen(id) {
-  // M�todo mais robusto que for�a a oculta��o
+  // Método mais robusto que força a ocultação
   document.querySelectorAll('.screen').forEach(screen => {
     screen.style.display = 'none';
     screen.classList.remove('active');
@@ -56,7 +60,7 @@ function showScreen(id) {
   
   const targetScreen = document.getElementById(id);
   if (targetScreen) {
-    targetScreen.style.display = 'flex'; // For�a o display flex
+    targetScreen.style.display = 'flex'; // Força o display flex
     targetScreen.classList.add('active');
     console.log('Mostrando tela:', id); // Para debug
   }
@@ -72,7 +76,7 @@ function updateUI(user) {
 
   if (user) {
     loginBtn.style.display = 'none';
-    registerBtn.style.display = 'none'; // Oculta o bot�o de registro tamb�m
+    registerBtn.style.display = 'none'; // Oculta o botão de registro também
     logoutBtn.style.display = 'inline-block';
     loginStatus.textContent = `Logado como: ${user.email}`;
     mainNav.style.display = 'block';
@@ -83,23 +87,23 @@ function updateUI(user) {
     logoutBtn.style.display = 'none';
     loginStatus.textContent = '';
     mainNav.style.display = 'none';
-    showScreen('login'); // Mostra a tela de login se n�o houver usu�rio
+    showScreen('login'); // Mostra a tela de login se não houver usuário
   }
 }
 
-// Monitora o estado de autenticação
+// Monitora o estado de autenticaÃ§Ã£o
 auth.onAuthStateChanged(user => {
   if (user) {
-    console.log("Usu�rio logado:", user.email);
+    console.log("Usuário logado:", user.email);
     document.getElementById('user-email').textContent = `Bem-vindo(a), ${user.email}`;
     loadEvents(user.uid);
   }
   updateUI(user); 
 });
 
-// Configuração dos event listeners
+// ConfiguraÃ§Ã£o dos event listeners
 function setupEventListeners() {
-  // Navegação
+  // NavegaÃ§Ã£o
   document.getElementById('login-btn').addEventListener('click', () => showScreen('login'));
   document.getElementById('register-btn').addEventListener('click', () => showScreen('register'));
   document.getElementById('logout-btn').addEventListener('click', logout);
@@ -107,14 +111,14 @@ function setupEventListeners() {
   document.getElementById('schedule-btn').addEventListener('click', () => showScreen('schedule'));
   document.getElementById('history-btn').addEventListener('click', () => showScreen('history'));
 
-  // Autenticação
+  // AutenticaÃ§Ã£o
   document.getElementById('login-submit').addEventListener('click', login);
   document.getElementById('register-submit').addEventListener('click', register);
 
   // Agendamentos
   document.getElementById('add-event-btn').addEventListener('click', addEvent);
 
-  // Modal de edição
+  // Modal de ediÃ§Ã£o
   document.getElementById('save-edit-btn').addEventListener('click', saveEdit);
   document.getElementById('cancel-edit-btn').addEventListener('click', closeModal);
 
@@ -126,7 +130,7 @@ function setupEventListeners() {
   });
 }
 
-// Função de login
+// FunÃ§Ã£o de login
 function login() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value.trim();
@@ -145,16 +149,16 @@ function login() {
     .catch(error => {
       let errorMessage = "Erro ao fazer login: ";
       switch (error.code) {
-        case 'auth/user-not-found': errorMessage += "Usuário não encontrado."; break;
+        case 'auth/user-not-found': errorMessage += "UsuÃ¡rio nÃ£o encontrado."; break;
         case 'auth/wrong-password': errorMessage += "Senha incorreta."; break;
-        case 'auth/invalid-email': errorMessage += "E-mail inválido."; break;
+        case 'auth/invalid-email': errorMessage += "E-mail invÃ¡lido."; break;
         default: errorMessage += error.message;
       }
       errorElement.textContent = errorMessage;
     });
 }
 
-// Função de cadastro
+// FunÃ§Ã£o de cadastro
 function register() {
   const email = document.getElementById('register-email').value.trim();
   const password = document.getElementById('register-password').value.trim();
@@ -179,8 +183,8 @@ function register() {
     .catch(error => {
       let errorMessage = "Erro ao cadastrar: ";
       switch (error.code) {
-        case 'auth/email-already-in-use': errorMessage += "E-mail já em uso."; break;
-        case 'auth/invalid-email': errorMessage += "E-mail inválido."; break;
+        case 'auth/email-already-in-use': errorMessage += "E-mail jÃ¡ em uso."; break;
+        case 'auth/invalid-email': errorMessage += "E-mail invÃ¡lido."; break;
         case 'auth/weak-password': errorMessage += "Senha muito fraca."; break;
         default: errorMessage += error.message;
       }
@@ -188,7 +192,7 @@ function register() {
     });
 }
 
-// Função de logout
+// FunÃ§Ã£o de logout
 function logout() {
   auth.signOut().catch(error => {
     alert("Erro ao sair: " + error.message);
@@ -201,7 +205,7 @@ function addEvent() {
   const errorElement = document.getElementById('event-error');
 
   if (!user) {
-    errorElement.textContent = "Voc� precisa estar logado.";
+    errorElement.textContent = "Você precisa estar logado.";
     showScreen('login');
     return;
   }
@@ -217,10 +221,10 @@ function addEvent() {
   }
 
   const resumo =
-    `Tipo: ${type === "medicamento" ? "Lembrete de Medicamento" : "Compromisso M�dico"}\n` +
-    `T�tulo: ${title}\n` +
+    `Tipo: ${type === "medicamento" ? "Lembrete de Medicamento" : "Compromisso Médico"}\n` +
+    `Título: ${title}\n` +
     `Data: ${date}\n` +
-    `Hor�rio: ${time}\n\nDeseja confirmar?`;
+    `Horário: ${time}\n\nDeseja confirmar?`;
 
   showConfirmDialog(resumo, () => {
     const event = { type, title, date, time };
@@ -243,8 +247,8 @@ function addEvent() {
 
 
 
-// Abre o modal de edição
-// Fun��o para abrir modal de edi��o (ajustes m�nimos)
+// Abre o modal de ediÃ§Ã£o
+// Função para abrir modal de edição (ajustes mínimos)
 function openEditModal(eventId, eventData) {
   console.log('Preparando para editar:', eventId, eventData);
   currentEditId = eventId;
@@ -256,23 +260,23 @@ function openEditModal(eventId, eventData) {
   document.getElementById('edit-modal').style.display = 'block';
 }
 
-// Fun��o para excluir evento (com mais logs)
+// Função para excluir evento (com mais logs)
 function deleteEvent(eventId) {
   if (!confirm("Tem certeza que deseja excluir este agendamento?")) {
-    console.log('Exclus�o cancelada pelo usu�rio');
+    console.log('Exclusão cancelada pelo usuário');
     return;
   }
   
   const user = auth.currentUser;
   if (!user) {
-    console.error('Nenhum usu�rio logado ao tentar excluir');
+    console.error('Nenhum usuário logado ao tentar excluir');
     return;
   }
 
-  console.log('Enviando exclus�o para o Firebase...');
+  console.log('Enviando exclusão para o Firebase...');
   db.ref(`users/${user.uid}/events/${eventId}`).remove()
     .then(() => {
-      console.log('Evento exclu�do com sucesso!');
+      console.log('Evento excluído com sucesso!');
       loadEvents(user.uid); // Recarrega a lista
     })
     .catch(error => {
@@ -287,11 +291,11 @@ function closeModal() {
   currentEditId = null;
 }
 
-// Salva as edições
+// Salva as ediÃ§Ãµes
 function saveEdit() {
   const user = auth.currentUser;
   if (!user || !currentEditId) {
-    console.error('Usu�rio n�o logado ou ID de edi��o inv�lido');
+    console.error('Usuário não logado ou ID de edição inválido');
     return;
   }
 
@@ -306,7 +310,7 @@ function saveEdit() {
     return;
   }
 
-  console.log('Salvando edi��o para o evento:', currentEditId);
+  console.log('Salvando edição para o evento:', currentEditId);
   const updatedEvent = { type, title, date, time };
 
   db.ref(`users/${user.uid}/events/${currentEditId}`).update(updatedEvent)
@@ -323,22 +327,22 @@ function saveEdit() {
 
 // Exclui um evento
 function deleteEvent(eventId) {
-  console.log('Iniciando exclus�o do evento:', eventId); // Debug
+  console.log('Iniciando exclusão do evento:', eventId); // Debug
   if (!confirm("Tem certeza que deseja excluir este agendamento?")) {
-    console.log('Exclus�o cancelada pelo usu�rio');
+    console.log('Exclusão cancelada pelo usuário');
     return;
   }
   
   const user = auth.currentUser;
   if (!user) {
-    console.error('Nenhum usu�rio logado ao tentar excluir evento');
+    console.error('Nenhum usuário logado ao tentar excluir evento');
     return;
   }
 
-  console.log('Enviando exclus�o para o Firebase...');
+  console.log('Enviando exclusão para o Firebase...');
   db.ref(`users/${user.uid}/events/${eventId}`).remove()
     .then(() => {
-      console.log('Evento exclu�do com sucesso');
+      console.log('Evento excluído com sucesso');
       loadEvents(user.uid); // Recarrega a lista
     })
     .catch(error => {
@@ -371,7 +375,7 @@ function loadEvents(uid) {
         const eventId = child.key;
         const text = `${ev.date} ${ev.time} - ${ev.title} (${ev.type === "medicamento" ? "Lembrete" : "Compromisso"})`;
 
-        // Cria item para o hist�rico
+        // Cria item para o histórico
         const historyLi = document.createElement('li');
         historyLi.className = 'event-item';
 
@@ -452,11 +456,11 @@ function loadEvents(uid) {
     .catch(error => {
       console.error("Erro ao carregar eventos:", error);
       todayList.innerHTML = "<li>Erro ao carregar eventos.</li>";
-      historyList.innerHTML = "<li>Erro ao carregar hist�rico.</li>";
+      historyList.innerHTML = "<li>Erro ao carregar histórico.</li>";
     });
 }
 
-// Inicializa a aplicação quando o DOM estiver carregado
+// Inicializa a aplicaÃ§Ã£o quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   initGoogleClient(); // Inicializa Google API
@@ -467,12 +471,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// Debug tempor�rio (remova depois)
-console.log('=== TESTE DE FUNCIONAMENTO DOS BOT�ES ===');
+// Debug temporário (remova depois)
+console.log('=== TESTE DE FUNCIONAMENTO DOS BOTÕES ===');
 if (auth.currentUser) {
   db.ref(`users/${auth.currentUser.uid}/events`).once('value').then(snap => {
     snap.forEach(child => {
-      console.log(`Evento dispon�vel para teste - ID: ${child.key}`, child.val());
+      console.log(`Evento disponível para teste - ID: ${child.key}`, child.val());
     });
   });
 }
@@ -492,15 +496,41 @@ function showConfirmDialog(message, onConfirm) {
   const cloneCancel = btnCancel.cloneNode(true);
   btnCancel.parentNode.replaceChild(cloneCancel, btnCancel);
 
-  // Bot�o Confirmar
+  // Botão Confirmar
   cloneOk.addEventListener('click', () => {
     modal.style.display = 'none';
-    onConfirm(); // chama a fun��o passada
+    onConfirm(); // chama a função passada
   });
 
-  // Bot�o Cancelar
+  // Botão Cancelar
   cloneCancel.addEventListener('click', () => {
     modal.style.display = 'none';
+  });
+}
+
+function handleCredentialResponse(response) {
+  const idToken = response.credential;
+
+  // Logar no Firebase
+  const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
+  firebase.auth().signInWithCredential(credential)
+    .then((userCredential) => {
+      console.log("Usuário autenticado com Firebase via Google.");
+      loadEvents(userCredential.user.uid);
+    })
+    .catch(error => {
+      console.error("Erro ao autenticar com Firebase:", error);
+    });
+
+  // Configurar Google API com token
+  gapi.load('client', () => {
+    gapi.client.init({
+      apiKey: API_KEY,
+      discoveryDocs: DISCOVERY_DOCS,
+    }).then(() => {
+      gapi.client.setToken({ access_token: idToken }); // GIS usa idToken como access_token limitado
+      console.log("Google API client inicializada com GIS token.");
+    });
   });
 }
 
@@ -510,7 +540,7 @@ function addToGoogleCalendar(event) {
 
   const resource = {
     summary: event.title,
-    description: event.type === "medicamento" ? "Lembrete de Medicamento" : "Compromisso M�dico",
+    description: event.type === "medicamento" ? "Lembrete de Medicamento" : "Compromisso Médico",
     start: {
       dateTime: startDateTime,
       timeZone: "America/Sao_Paulo"
@@ -521,15 +551,14 @@ function addToGoogleCalendar(event) {
     }
   };
 
-  // Solicita login e insere o evento
-  gapi.auth2.getAuthInstance().signIn().then(() => {
-    gapi.client.calendar.events.insert({
-      calendarId: 'primary',
-      resource: resource
-    }).then(response => {
-      console.log('Evento adicionado ao Google Agenda:', response);
-    }).catch(error => {
-      console.error('Erro ao adicionar ao Google Agenda:', error);
-    });
+  gapi.client.calendar.events.insert({
+    calendarId: 'primary',
+    resource: resource
+  }).then(response => {
+    console.log('Evento adicionado ao Google Agenda:', response);
+  }).catch(error => {
+    console.error('Erro ao adicionar ao Google Agenda:', error);
   });
 }
+
+
