@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)https://rcrdevs.github.io/Projeto-ReMediar/ -->
+<html lang="pt-br">
+
+<head>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReMediar</title>
+  <link rel="stylesheet" href="./ReMediar_files/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <h1>ReMediar</h1>
+        <p>Agenda Online para Idosos</p>
+      </div>
+      <div id="auth-buttons" class="auth-buttons">
+        <button id="login-btn" style="display: inline-block;">Login</button>
+        <button id="register-btn" style="display: inline-block;">Cadastro</button>
+        <button id="logout-btn" class="logout-btn" style="display: none;">Sair</button>
+      </div>
+    </div>
+    <div id="login-status"></div>
+  </header>
+
+  <div class="container">
+    <nav id="main-nav" style="display: none;">
+      <button id="home-btn">Tela Inicial</button>
+      <button id="schedule-btn">Agendamento</button>
+      <button id="history-btn">Histórico</button>
+    </nav>
+
+    <!-- Telas -->
+    <div id="login" class="screen active">
+      <h2>Login</h2>
+      <div class="form-group">
+        <label for="login-email">E-mail:</label>
+        <input type="email" id="login-email" required="">
+      </div>
+      <div class="form-group">
+        <label for="login-password">Senha:</label>
+        <input type="password" id="login-password" required="">
+      </div>
+      <button class="button" id="login-submit">Entrar</button>
+      <p id="login-error" class="error-message"></p>
+    </div>
+
+    <div id="register" class="screen">
+      <h2>Cadastro</h2>
+      <div class="form-group">
+        <label for="register-email">E-mail:</label>
+        <input type="email" id="register-email" required="">
+      </div>
+      <div class="form-group">
+        <label for="register-password">Senha:</label>
+        <input type="password" id="register-password" required="" minlength="6">
+      </div>
+      <button class="button" id="register-submit">Cadastrar</button>
+      <p id="register-error" class="error-message"></p>
+    <div id="extwaiokist" style="display:none" v="fcoon" q="64d9fcf8" c="55.13" i="66" u="24.49" s="04242500" sg="svr_05062522-ga_04242500-bai_04272521" d="1" w="false" e="" a="2" m="BMe=" vn="3gtra"><div id="extwaigglbit" style="display:none" v="fcoon" q="64d9fcf8" c="55.13" i="66" u="24.49" s="04242500" sg="svr_05062522-ga_04242500-bai_04272521" d="1" w="false" e="" a="2" m="BMe="></div></div></div>
+
+    <div id="home" class="screen">
+      <h2>Tela Inicial</h2>
+      <p id="user-email">Bem-vindo(a)!</p>
+      <h3>Compromissos e Lembretes do Dia</h3>
+      <ul id="today-list"></ul>
+    </div>
+
+    <div id="schedule" class="screen">
+      <h2>Agendar Compromisso / Lembrete</h2>
+      <div class="form-group">
+        <label for="event-type">Tipo:</label>
+        <select id="event-type">
+          <option value="medicamento">Lembrete de Medicamento</option>
+          <option value="compromisso">Compromisso Médico</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="event-title">Título:</label>
+        <input type="text" id="event-title" required="">
+      </div>
+      <div class="form-group">
+        <label for="event-date">Data:</label>
+        <input type="date" id="event-date" required="">
+      </div>
+      <div class="form-group">
+        <label for="event-time">Horário:</label>
+        <input type="time" id="event-time" required="">
+      </div>
+      <button class="button" id="add-event-btn">Adicionar Evento</button>
+      <p id="event-error" class="error-message"></p>
+    </div>
+
+    <div id="history" class="screen">
+      <h2>Histórico</h2>
+      <ul id="history-list"></ul>
+    </div>
+  </div>
+
+  <!-- Modal de Edição -->
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <h2>Editar Agendamento</h2>
+      <div class="form-group">
+        <label for="edit-type">Tipo:</label>
+        <select id="edit-type">
+          <option value="medicamento">Lembrete de Medicamento</option>
+          <option value="compromisso">Compromisso Médico</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit-title">Título:</label>
+        <input type="text" id="edit-title" required="">
+      </div>
+      <div class="form-group">
+        <label for="edit-date">Data:</label>
+        <input type="date" id="edit-date" required="">
+      </div>
+      <div class="form-group">
+        <label for="edit-time">Hor�rio:</label>
+        <input type="time" id="edit-time" required="">
+      </div>
+      <button class="button" id="save-edit-btn">Salvar</button>
+      <button class="button cancel-btn" id="cancel-edit-btn">Cancelar</button>
+      <p id="edit-error" class="error-message"></p>
+    </div>
+  </div>
+
+  <!-- ? Modal de Confirma��o Personalizado -->
+  <div id="confirm-modal" class="modal">
+    <div class="modal-content">
+      <h2>ReMediar</h2>
+      <p id="confirm-text"></p>
+      <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="button cancel-btn" id="confirm-cancel">Cancelar</button>
+        <button class="button" id="confirm-ok">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>ReMediar ver 3 - Desenvolvido por: Davi Ferreira, Franksney Gregorio e Ricardo Ruiz</p>
+  </footer>
+
+  <!-- Firebase SDKs -->
+  <script src="firebase-app.js"></script>
+  <script src="firebase-auth.js"></script>
+  <script src="firebase-database.js"></script>
+
+  <!-- Seu script -->
+  <script src="script.js"></script>
+
+  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+
+</div>
+
+
+</body>
+</html>
