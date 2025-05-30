@@ -516,33 +516,41 @@ function showConfirmDialog(message, onConfirm) {
 function handleCredentialResponse(response) {
   const idToken = response.credential;
 
+  // 1. Autentica o usuário no Firebase com o idToken recebido do Google
   const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
   firebase.auth().signInWithCredential(credential)
     .then((userCredential) => {
       console.log("Usuário autenticado com Firebase via Google.");
       loadEvents(userCredential.user.uid);
+
+      // 2. Inicializa o tokenClient se ainda não estiver criado
+      if (!tokenClient) {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: (tokenResponse) => {
+            if (tokenResponse && tokenResponse.access_token) {
+              accessToken = tokenResponse.access_token;
+              gapi.client.setToken({ access_token });
+              console.log("Token de acesso definido para Google Calendar.");
+            } else {
+              console.error("Erro ao obter token de acesso OAuth:", tokenResponse);
+            }
+          }
+        });
+      }
+
+      // 3. Só solicita novo token se ainda não tiver um
+      if (!accessToken) {
+        tokenClient.requestAccessToken();
+      } else {
+        console.log("Token de acesso já existente. Nenhum novo popup aberto.");
+      }
     })
     .catch(error => {
       console.error("Erro ao autenticar com Firebase:", error);
     });
-
-  // Inicializa o token client apenas uma vez
-  if (!calendarTokenClient) {
-    calendarTokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: (tokenResponse) => {
-        if (tokenResponse && tokenResponse.access_token) {
-          gapi.client.setToken(tokenResponse);
-          console.log("Token de acesso definido para Google Calendar.");
-        } else {
-          console.error("Erro ao obter token de acesso OAuth:", tokenResponse);
-        }
-      }
-    });
-  }
 }
-
 
 function addToGoogleCalendar(event) {
   const startDateTime = `${event.date}T${event.time}:00`;
