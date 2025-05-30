@@ -1,3 +1,7 @@
+let tokenClient;
+let accessToken = null;
+
+
 // ConfiguraÃ§Ã£o do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAXC8XI_Q8jM5MrTpboorCMqti5Yn-B7gI",
@@ -511,37 +515,42 @@ function showConfirmDialog(message, onConfirm) {
 function handleCredentialResponse(response) {
   const idToken = response.credential;
 
-  // 1. Autentica no Firebase com o idToken recebido
+  // Firebase Auth com o idToken
   const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
   firebase.auth().signInWithCredential(credential)
-    .then((userCredential) => {
+    .then(userCredential => {
       console.log("Usuário autenticado com Firebase via Google.");
-      loadEvents(userCredential.user.uid);
+
+      // Agora inicializa o OAuth 2 para obter access_token do Google Calendar
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (tokenResponse) => {
+          if (tokenResponse && tokenResponse.access_token) {
+            accessToken = tokenResponse.access_token;
+            gapi.client.setToken({ access_token }); // aplica token no client
+            console.log("Token de acesso definido para Google Calendar.");
+          } else {
+            console.error("Erro ao obter token de acesso OAuth:", tokenResponse);
+          }
+        }
+      });
+
+      // Solicita consentimento de acesso (irá abrir popup)
+      tokenClient.requestAccessToken();
     })
     .catch(error => {
       console.error("Erro ao autenticar com Firebase:", error);
     });
-
-  // 2. Solicita acesso ao Google Calendar (OAuth com escopo calendar.events)
-  const tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: (tokenResponse) => {
-      if (tokenResponse && tokenResponse.access_token) {
-        gapi.client.setToken(tokenResponse);
-        console.log("Token de acesso definido para Google Calendar.");
-      } else {
-        console.error("Erro ao obter token de acesso OAuth:", tokenResponse);
-      }
-    }
-  });
-
-  // 3. Solicita o token OAuth (irá abrir o consentimento se necessário)
-  tokenClient.requestAccessToken();
 }
 
-
 function addToGoogleCalendar(event) {
+  if (!accessToken) {
+    console.error("Token de acesso ao Google Calendar não disponível.");
+    alert("Você precisa autorizar o acesso ao Google Agenda.");
+    return;
+  }
+
   const startDateTime = `${event.date}T${event.time}:00`;
 
   const resource = {
@@ -564,6 +573,7 @@ function addToGoogleCalendar(event) {
     console.log('Evento adicionado ao Google Agenda:', response);
   }).catch(error => {
     console.error('Erro ao adicionar ao Google Agenda:', error);
+    alert("Erro ao adicionar ao Google Agenda. Verifique se as permissões foram concedidas.");
   });
 }
 
