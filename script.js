@@ -511,7 +511,7 @@ function showConfirmDialog(message, onConfirm) {
 function handleCredentialResponse(response) {
   const idToken = response.credential;
 
-  // Logar no Firebase
+  // 1. Autentica no Firebase com o idToken recebido
   const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
   firebase.auth().signInWithCredential(credential)
     .then((userCredential) => {
@@ -522,16 +522,22 @@ function handleCredentialResponse(response) {
       console.error("Erro ao autenticar com Firebase:", error);
     });
 
-  // Configurar Google API com token
-  gapi.load('client', () => {
-    gapi.client.init({
-      apiKey: API_KEY,
-      discoveryDocs: DISCOVERY_DOCS,
-    }).then(() => {
-      gapi.client.setToken({ access_token: idToken }); // GIS usa idToken como access_token limitado
-      console.log("Google API client inicializada com GIS token.");
-    });
+  // 2. Solicita acesso ao Google Calendar (OAuth com escopo calendar.events)
+  const tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (tokenResponse) => {
+      if (tokenResponse && tokenResponse.access_token) {
+        gapi.client.setToken(tokenResponse);
+        console.log("Token de acesso definido para Google Calendar.");
+      } else {
+        console.error("Erro ao obter token de acesso OAuth:", tokenResponse);
+      }
+    }
   });
+
+  // 3. Solicita o token OAuth (irá abrir o consentimento se necessário)
+  tokenClient.requestAccessToken();
 }
 
 
@@ -560,5 +566,6 @@ function addToGoogleCalendar(event) {
     console.error('Erro ao adicionar ao Google Agenda:', error);
   });
 }
+
 
 
